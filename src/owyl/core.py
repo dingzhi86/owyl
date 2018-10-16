@@ -17,7 +17,7 @@ import logging
 try:
     from mx.Stack import Stack, EmptyError
 except ImportError:
-    from stack import Stack, EmptyError
+    from .stack import Stack, EmptyError
 
 RETURN_VALUES = set((True, False, None))
 
@@ -176,7 +176,7 @@ def visit(tree, **kwargs):
                 send_value = None
                 send_ok = False
             else:
-                child = current.next()
+                child = next(current)
 
             if child in return_values:
                 send_value = child
@@ -222,7 +222,7 @@ def stall(**kwargs):
     """
     func = kwargs.pop('func')
     after = kwargs.pop('after', 1)
-    for x in xrange(after):
+    for x in range(after):
         yield None
     yield bool(func())
 
@@ -237,7 +237,7 @@ def succeedAfter(**kwargs):
     @type after: int
     """
     after = kwargs.pop('after', 1)
-    for x in xrange(after):
+    for x in range(after):
         yield None
     yield True
 
@@ -252,7 +252,7 @@ def failAfter(**kwargs):
     @type after: int
     """
     after = kwargs.pop('after', 1)
-    for x in xrange(after):
+    for x in range(after):
         yield None
     yield False
 

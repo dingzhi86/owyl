@@ -16,12 +16,12 @@ __date__ = "$Date$"[7:-2]
 
 import time
 
-import core
+from .core import parent_task, visit
 
 __all__ = ['identity', 'repeatUntilFail', 'repeatUntilSucceed',
            'flip', 'repeatAlways', 'limit']
 
-@core.parent_task
+@parent_task
 def identity(child, **kwargs):
     """Transparent decorator. Pass yielded values from child unchanged.
     """
@@ -31,7 +31,7 @@ def identity(child, **kwargs):
         result = (yield child)
     yield result
 
-@core.parent_task
+@parent_task
 def flip(child, **kwargs):
     """NOT decorator. Pass yielded values from child with the boolean flipped.
 
@@ -43,14 +43,14 @@ def flip(child, **kwargs):
         result = (yield child)
     yield not result
 
-@core.parent_task
+@parent_task
 def repeatAlways(child, **kwargs):
     """Perpetually iterate over the child, regardless of return value.
     """
     result = None
     while True:
         try:
-            visitor = core.visit(child, **kwargs)
+            visitor = visit(child, **kwargs)
         except StopIteration:
             continue
         while result is None:
@@ -61,7 +61,7 @@ def repeatAlways(child, **kwargs):
                 break
         
 
-@core.parent_task
+@parent_task
 def repeatUntilFail(child, **kwargs):
     """Repeatedly iterate over the child until it fails.
 
@@ -83,7 +83,7 @@ def repeatUntilFail(child, **kwargs):
             result = None
     yield final_value
 
-@core.parent_task
+@parent_task
 def repeatUntilSucceed(child, **kwargs):
     """Repeatedly iterate over the child until it succeeds.
 
@@ -105,7 +105,7 @@ def repeatUntilSucceed(child, **kwargs):
             result = None
     yield final_value
 
-@core.parent_task
+@parent_task
 def limit(child, **kwargs):
     """Limit the child to only iterate once every period.
 
@@ -117,7 +117,7 @@ def limit(child, **kwargs):
     last_run = nowtime()
     period = kwargs.get('limit_period', 1.0)
     result = None
-    visitor = core.visit(child, **kwargs)
+    visitor = visit(child, **kwargs)
     while True:
         now = nowtime()
         since_last = now - last_run

@@ -17,7 +17,7 @@ __date__ = "$Date$"[7:-2]
 
 from collections import defaultdict
 
-import core
+from .core import task
 
 __all__ = ['Blackboard', 'checkBB', 'setBB', ]
 
@@ -37,7 +37,7 @@ class Blackboard(defaultdict):
         super(Blackboard, self).__init__(default, **kwargs)
 
 
-@core.task
+@task
 def checkBB(**kwargs):
     """Check a value on the blackboard.
 
@@ -57,7 +57,7 @@ def checkBB(**kwargs):
     yield result
 
 
-@core.task
+@task
 def setBB(**kwargs):
     """Set a value on the blackboard.
 
